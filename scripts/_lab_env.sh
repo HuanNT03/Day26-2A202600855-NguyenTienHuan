@@ -24,6 +24,10 @@ resolve_lab_python() {
   local root="${1:-.}"
   local c candidates=()
 
+  if [[ -x "$root/.venv/bin/python" ]]; then
+    candidates+=("$root/.venv/bin/python")
+  fi
+
   # Ưu tiên conda (pii-env) — lab không dùng .venv
   if [[ -n "${CONDA_PREFIX:-}" && -x "${CONDA_PREFIX}/bin/python" ]]; then
     candidates+=("${CONDA_PREFIX}/bin/python")
