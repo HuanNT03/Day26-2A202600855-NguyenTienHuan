@@ -16,9 +16,9 @@ Ban đầu, MCP Server expose 3 tool sau:
 *   `summarize_text`: Tóm tắt văn bản thành các gạch đầu dòng ngắn gọn.
 
 #### 2. `_sql_query` enforce governance như thế nào?
-Trong code của `_sql_query` tại [research_tools_server.py](file:///home/huan/Develop/Github/Day26-Lab/Day26-2A202600855-NguyenTienHuan/mcp_server/research_tools_server.py):
+Trong code của `_sql_query` tại `research_tools_server.py`:
 *   Nó kiểm tra chuỗi truy vấn SQL bằng cách xem từ khóa `"AGENT_METRICS"` có xuất hiện trong câu lệnh hay không. Nếu không, nó sẽ lập tức trả về danh sách rỗng `[]` (không cho phép truy vấn bảng khác).
-*   *Lưu ý nâng cao:* Ở mức tích hợp hệ thống, `_sql_query` còn được bảo vệ bởi lớp `GovernanceGuard` (trong tệp [guard.py](file:///home/huan/Develop/Github/Day26-Lab/Day26-2A202600855-NguyenTienHuan/lab_utils/governance/guard.py)), lớp này sẽ quét câu lệnh để đảm bảo:
+*   *Lưu ý nâng cao:* Ở mức tích hợp hệ thống, `_sql_query` còn được bảo vệ bởi lớp `GovernanceGuard` (trong tệp `guard.py`), lớp này sẽ quét câu lệnh để đảm bảo:
     1. Bắt buộc bắt đầu bằng từ khóa `SELECT` (chỉ đọc).
     2. Cấm toàn bộ các từ khóa ghi hoặc thay đổi cấu trúc DB như: `DROP`, `DELETE`, `UPDATE`, `INSERT`, `ALTER`, `CREATE`, `TRUNCATE`.
     3. Kiểm tra danh sách bảng được cho phép trong `policy.json` (chỉ cho phép bảng `agent_metrics`).
@@ -90,7 +90,7 @@ Chúng ta nên chọn kiến trúc A2A khi:
 ## ### 📝 Bài tập 3.1 — Xây dựng Fallback Chain
 
 #### Logic Triển khai:
-Phương thức `route_with_chain` được triển khai tại [semantic_router.py](file:///home/huan/Develop/Github/Day26-Lab/Day26-2A202600855-NguyenTienHuan/lab_utils/semantic_router.py) như sau:
+Phương thức `route_with_chain` được triển khai tại `semantic_router.py` như sau:
 ```python
 def route_with_chain(self, request: str, chain: list[str]) -> str:
     """Thử định tuyến chính; nếu điểm số < ngưỡng (threshold), đi theo chuỗi fallback có thứ tự."""
@@ -141,7 +141,7 @@ Dưới đây là thiết kế chi tiết cho chính sách Governance của hệ
 ## ### 📝 Bài tập 5.2 — Mở rộng chính sách governance
 
 #### 1. Thêm agent `synthesis_agent` vào allowed targets:
-Trong [policy.json](file:///home/huan/Develop/Github/Day26-Lab/Day26-2A202600855-NguyenTienHuan/lab_utils/governance/policy.json):
+Trong `policy.json`:
 ```json
 "orchestrator": {
   "allowed_targets": ["search_agent", "database_agent", "synthesis_agent"],
@@ -159,7 +159,7 @@ Trong [policy.json](file:///home/huan/Develop/Github/Day26-Lab/Day26-2A202600855
       "blocked_keywords": ["password"]
     }
     ```
-*   Hiện thực logic kiểm tra trong `authorize_mcp_tool` tại [guard.py](file:///home/huan/Develop/Github/Day26-Lab/Day26-2A202600855-NguyenTienHuan/lab_utils/governance/guard.py):
+*   Hiện thực logic kiểm tra trong `authorize_mcp_tool` tại `guard.py`:
     ```python
     blocked_keywords = tool_policy.get("blocked_keywords", [])
     for keyword in blocked_keywords:
